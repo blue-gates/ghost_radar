@@ -21,15 +21,11 @@ video{
   width:100%;height:100%;
   object-fit:cover;
   display:none;
-  filter:
-    grayscale(100%)
-    contrast(190%)
-    brightness(55%)
-    sepia(100%)
-    hue-rotate(90deg);
+  filter:grayscale(100%) contrast(190%) brightness(55%)
+          sepia(100%) hue-rotate(90deg);
 }
 
-/* OLD CAMERA */
+/* OLD CAM */
 .oldcam{
   filter:grayscale(100%) contrast(240%) brightness(40%) blur(.8px);
 }
@@ -41,8 +37,7 @@ video{
 /* VHS GLITCH */
 .rgb-glitch{
   animation:rgb .08s infinite, shake .12s infinite;
-  filter:
-    grayscale(100%) contrast(220%) brightness(50%)
+  filter:grayscale(100%) contrast(220%) brightness(50%)
     sepia(100%) hue-rotate(90deg)
     drop-shadow(-4px 0 red)
     drop-shadow(4px 0 cyan);
@@ -94,7 +89,7 @@ video{
   100%{text-shadow:-3px 0 red,3px 0 cyan}
 }
 
-/* 👻 GHOST – GREEN BLENDED */
+/* 👻 GHOST BLENDED */
 #ghostFlash{
   position:fixed;
   inset:0;
@@ -106,12 +101,10 @@ video{
   z-index:7;
   opacity:.45;
   mix-blend-mode:screen;
-  filter:
-    grayscale(100%)
-    sepia(100%)
-    hue-rotate(80deg)
-    brightness(130%)
-    blur(2px);
+  filter:grayscale(100%) sepia(100%)
+          hue-rotate(80deg)
+          brightness(130%)
+          blur(2px);
 }
 
 /* UI */
@@ -166,6 +159,7 @@ svg{width:22px;height:22px;fill:var(--green)}
 <div id="static"></div>
 <div id="noSignal">NO SIGNAL</div>
 
+<!-- AUDIO -->
 <audio id="bg" src="sounds/background.mp3" loop></audio>
 <audio id="heartbeat" src="sounds/heartbeat.mp3" loop></audio>
 <audio id="glitchSound" src="sounds/glitch.mp3"></audio>
@@ -196,15 +190,15 @@ svg{width:22px;height:22px;fill:var(--green)}
 
 <div class="copyright"
  onclick="window.open('https://instagram.com/_fayizeeyy','_blank')">
-Any Suggestions Click Here...!!!
+Developed By Fayas | ig = _fayizeeyy
 </div>
 
 <script>
 const cam=document.getElementById("cam");
-const status=document.getElementById("status");
 const staticFx=document.getElementById("static");
 const noSignal=document.getElementById("noSignal");
 const ghostFlash=document.getElementById("ghostFlash");
+const status=document.getElementById("status");
 
 const bg=document.getElementById("bg");
 const heartbeat=document.getElementById("heartbeat");
@@ -228,19 +222,26 @@ function startAll(){
  started=true;
  unlockAudio();
  startCamera();
+
  bg.volume=.35; bg.play();
  heartbeat.volume=.8; heartbeat.play();
+
  status.innerText="SCANNING";
  setInterval(triggerGlitch,15000);
 }
 
 function triggerGlitch(){
- cam.classList.add("rgb-glitch");
+ // glitch sound only
  glitchSound.currentTime=0;
  glitchSound.play();
 
+ cam.classList.add("rgb-glitch");
+
+ // ghost appears (bg + heartbeat continue)
  setTimeout(()=>{
    ghostFlash.style.display="block";
+   smileSound.currentTime=0;
+   smileSound.play();
  },500);
 
  setTimeout(()=>{
@@ -255,8 +256,6 @@ function triggerGlitch(){
  setTimeout(()=>{
    staticFx.style.display="none";
    noSignal.style.display="flex";
-   smileSound.currentTime=0;
-   smileSound.play();
  },1800);
 
  setTimeout(()=>{
