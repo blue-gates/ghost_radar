@@ -21,24 +21,28 @@ video{
   width:100%;height:100%;
   object-fit:cover;
   display:none;
-  filter:grayscale(100%) contrast(190%) brightness(55%)
-          sepia(100%) hue-rotate(90deg);
+  filter:
+    grayscale(100%)
+    contrast(190%)
+    brightness(55%)
+    sepia(100%)
+    hue-rotate(90deg);
 }
 
-/* OLD CAMERA FEEL */
+/* OLD CAMERA */
 .oldcam{
-  filter:grayscale(100%) contrast(240%) brightness(40%)
-          blur(.8px);
+  filter:grayscale(100%) contrast(240%) brightness(40%) blur(.8px);
 }
 
 /* TRANSFORMS */
 .mirror{transform:scaleX(-1)}
 .angle{transform:rotate(180deg)}
 
-/* HARD VHS GLITCH */
+/* VHS GLITCH */
 .rgb-glitch{
   animation:rgb .08s infinite, shake .12s infinite;
-  filter:grayscale(100%) contrast(220%) brightness(50%)
+  filter:
+    grayscale(100%) contrast(220%) brightness(50%)
     sepia(100%) hue-rotate(90deg)
     drop-shadow(-4px 0 red)
     drop-shadow(4px 0 cyan);
@@ -90,7 +94,7 @@ video{
   100%{text-shadow:-3px 0 red,3px 0 cyan}
 }
 
-/* GHOST IMAGE FLASH */
+/* 👻 GHOST – GREEN BLENDED */
 #ghostFlash{
   position:fixed;
   inset:0;
@@ -99,10 +103,15 @@ video{
   object-fit:contain;
   display:none;
   pointer-events:none;
-  z-index:9;
-  opacity:.9;
-  filter:contrast(180%) brightness(120%)
-         drop-shadow(0 0 40px red);
+  z-index:7;
+  opacity:.45;
+  mix-blend-mode:screen;
+  filter:
+    grayscale(100%)
+    sepia(100%)
+    hue-rotate(80deg)
+    brightness(130%)
+    blur(2px);
 }
 
 /* UI */
@@ -157,7 +166,6 @@ svg{width:22px;height:22px;fill:var(--green)}
 <div id="static"></div>
 <div id="noSignal">NO SIGNAL</div>
 
-<!-- AUDIO -->
 <audio id="bg" src="sounds/background.mp3" loop></audio>
 <audio id="heartbeat" src="sounds/heartbeat.mp3" loop></audio>
 <audio id="glitchSound" src="sounds/glitch.mp3"></audio>
@@ -231,21 +239,19 @@ function triggerGlitch(){
  glitchSound.currentTime=0;
  glitchSound.play();
 
- // ghost flash
  setTimeout(()=>{
    ghostFlash.style.display="block";
  },500);
+
  setTimeout(()=>{
    ghostFlash.style.display="none";
- },850);
+ },900);
 
- // static cut
  setTimeout(()=>{
    cam.style.display="none";
    staticFx.style.display="block";
- },900);
+ },1000);
 
- // NO SIGNAL + smile
  setTimeout(()=>{
    staticFx.style.display="none";
    noSignal.style.display="flex";
@@ -253,7 +259,6 @@ function triggerGlitch(){
    smileSound.play();
  },1800);
 
- // restore
  setTimeout(()=>{
    noSignal.style.display="none";
    cam.style.display="block";
