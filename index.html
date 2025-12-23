@@ -31,7 +31,7 @@ video{
           blur(.8px);
 }
 
-/* MIRROR / ANGLE */
+/* TRANSFORMS */
 .mirror{transform:scaleX(-1)}
 .angle{transform:rotate(180deg)}
 
@@ -90,6 +90,21 @@ video{
   100%{text-shadow:-3px 0 red,3px 0 cyan}
 }
 
+/* GHOST IMAGE FLASH */
+#ghostFlash{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:none;
+  pointer-events:none;
+  z-index:9;
+  opacity:.9;
+  filter:contrast(180%) brightness(120%)
+         drop-shadow(0 0 40px red);
+}
+
 /* UI */
 .header{position:fixed;top:10px;left:50%;transform:translateX(-50%)}
 .status{
@@ -138,9 +153,11 @@ svg{width:22px;height:22px;fill:var(--green)}
 <body>
 
 <video id="cam" autoplay playsinline></video>
+<img id="ghostFlash" src="img/ghost.png">
 <div id="static"></div>
 <div id="noSignal">NO SIGNAL</div>
 
+<!-- AUDIO -->
 <audio id="bg" src="sounds/background.mp3" loop></audio>
 <audio id="heartbeat" src="sounds/heartbeat.mp3" loop></audio>
 <audio id="glitchSound" src="sounds/glitch.mp3"></audio>
@@ -179,6 +196,7 @@ const cam=document.getElementById("cam");
 const status=document.getElementById("status");
 const staticFx=document.getElementById("static");
 const noSignal=document.getElementById("noSignal");
+const ghostFlash=document.getElementById("ghostFlash");
 
 const bg=document.getElementById("bg");
 const heartbeat=document.getElementById("heartbeat");
@@ -202,7 +220,7 @@ function startAll(){
  started=true;
  unlockAudio();
  startCamera();
- bg.volume=.4; bg.play();
+ bg.volume=.35; bg.play();
  heartbeat.volume=.8; heartbeat.play();
  status.innerText="SCANNING";
  setInterval(triggerGlitch,15000);
@@ -213,11 +231,21 @@ function triggerGlitch(){
  glitchSound.currentTime=0;
  glitchSound.play();
 
+ // ghost flash
+ setTimeout(()=>{
+   ghostFlash.style.display="block";
+ },500);
+ setTimeout(()=>{
+   ghostFlash.style.display="none";
+ },850);
+
+ // static cut
  setTimeout(()=>{
    cam.style.display="none";
    staticFx.style.display="block";
  },900);
 
+ // NO SIGNAL + smile
  setTimeout(()=>{
    staticFx.style.display="none";
    noSignal.style.display="flex";
@@ -225,6 +253,7 @@ function triggerGlitch(){
    smileSound.play();
  },1800);
 
+ // restore
  setTimeout(()=>{
    noSignal.style.display="none";
    cam.style.display="block";
