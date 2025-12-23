@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>Ghost Radar</title>
 
 <style>
@@ -28,154 +28,149 @@ video{
 /* GLITCH */
 .rgb-glitch{
   animation:rgb .08s infinite, shake .12s infinite;
-  filter:
-    grayscale(100%) contrast(220%) brightness(50%)
+  filter:grayscale(100%) contrast(220%) brightness(50%)
     sepia(100%) hue-rotate(90deg)
     drop-shadow(-4px 0 red)
     drop-shadow(4px 0 cyan);
 }
 @keyframes rgb{
-  0%{clip-path:inset(0 0 80% 0)}
-  50%{clip-path:inset(30% 0 40% 0)}
+  0%{clip-path:inset(0 0 85% 0)}
+  50%{clip-path:inset(35% 0 30% 0)}
   100%{clip-path:inset(0 0 0 0)}
 }
 @keyframes shake{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(-6px,3px)}
-  100%{transform:translate(0,0)}
+  0%{transform:translate(0)}
+  50%{transform:translate(-5px,3px)}
+  100%{transform:translate(0)}
 }
 
 /* STATIC */
 #static{
   position:fixed;inset:0;
   display:none;
-  background:
-    repeating-linear-gradient(0deg,#000 0,#000 2px,#111 4px),
-    repeating-linear-gradient(90deg,#000 0,#000 2px,#111 4px);
+  background:repeating-linear-gradient(0deg,#000 0,#000 2px,#111 4px);
   animation:noise .08s infinite;
   z-index:10;
 }
-@keyframes noise{
-  to{background-position:200px 300px,-300px 400px}
-}
+@keyframes noise{to{background-position:200px 300px}}
 
 /* NO SIGNAL */
 #noSignal{
   position:fixed;inset:0;
   display:none;
   align-items:center;justify-content:center;
-  font-size:56px;
-  letter-spacing:6px;
+  font-size:42px;
+  letter-spacing:5px;
   color:white;background:black;
   z-index:11;
   animation:textGlitch .1s infinite;
 }
-@keyframes textGlitch{
-  0%{text-shadow:-5px 0 red,5px 0 cyan}
-  50%{text-shadow:5px 0 red,-5px 0 cyan}
-  100%{text-shadow:-3px 0 red,3px 0 cyan}
-}
 
-/* 👻 CAMERA GHOST (ONLY GLITCH TIME) */
+/* CAMERA GHOST */
 #ghostFlash{
   position:fixed;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:contain;
   display:none;
+  object-fit:contain;
   pointer-events:none;
   z-index:7;
   opacity:.45;
   mix-blend-mode:screen;
-  filter:
-    grayscale(100%)
-    sepia(100%)
-    hue-rotate(80deg)
-    brightness(130%)
-    blur(2px);
+  filter:grayscale(100%) sepia(100%)
+          hue-rotate(80deg)
+          brightness(130%) blur(2px);
 }
 
-/* ===== AIRPORT RADAR ===== */
+/* HEADER */
+.header{
+  position:fixed;top:8px;left:50%;
+  transform:translateX(-50%);
+  font-size:14px;
+  letter-spacing:2px;
+}
+
+/* STATUS */
+.status{
+  position:fixed;top:34px;left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.7);
+  padding:4px 12px;
+  border-radius:14px;
+  font-size:11px;
+}
+
+/* SMALL RADAR */
 .radar{
   position:fixed;
-  bottom:120px;
-  left:50%;
-  transform:translateX(-50%);
-  width:260px;height:260px;
+  bottom:88px;
+  right:12px;
+  width:110px;height:110px;
   border-radius:50%;
   overflow:hidden;
   background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(0,255,100,.15) 0,
-      rgba(0,255,100,.15) 1px,
+    repeating-linear-gradient(0deg,
+      rgba(0,255,100,.18) 0,
+      rgba(0,255,100,.18) 1px,
       transparent 1px,
-      transparent 20px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,255,100,.15) 0,
-      rgba(0,255,100,.15) 1px,
+      transparent 14px),
+    repeating-linear-gradient(90deg,
+      rgba(0,255,100,.18) 0,
+      rgba(0,255,100,.18) 1px,
       transparent 1px,
-      transparent 20px
-    );
-  box-shadow:0 0 25px rgba(0,255,100,.4);
+      transparent 14px);
+  border:1px solid var(--green);
+  box-shadow:0 0 15px rgba(0,255,100,.4);
 }
-
-/* RADAR RINGS */
-.radar::before{
-  content:"";
-  position:absolute;inset:0;
-  border-radius:50%;
-  border:2px solid var(--green);
-  box-shadow:
-    inset 0 0 0 40px rgba(0,255,100,.05),
-    inset 0 0 0 80px rgba(0,255,100,.04),
-    inset 0 0 0 120px rgba(0,255,100,.03);
-}
-
-/* SWEEP CONE */
 .sweep{
   position:absolute;
   width:50%;height:50%;
   background:conic-gradient(
     from 0deg,
-    rgba(0,255,100,.45),
+    rgba(0,255,100,.5),
     rgba(0,255,100,.15),
-    transparent 60%
-  );
+    transparent 65%);
   top:50%;left:50%;
   transform-origin:0% 0%;
-  animation:sweep 3s linear infinite;
+  animation:sweep 2.8s linear infinite;
 }
 @keyframes sweep{to{transform:rotate(360deg)}}
 
-/* UI */
-.header{position:fixed;top:10px;left:50%;transform:translateX(-50%)}
-.status{
-  position:fixed;top:50px;left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.7);
-  padding:6px 16px;border-radius:20px;
+/* FOOTER BAR */
+.footer{
+  position:fixed;
+  bottom:0;left:0;
+  width:100%;
+  height:70px;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-top:1px solid rgba(0,255,100,.2);
 }
 
-/* CONTROLS */
-.controls{
-  position:fixed;bottom:20px;left:50%;
-  transform:translateX(-50%);
-}
+/* BUTTON */
 .btn{
-  width:60px;height:60px;border-radius:50%;
+  width:52px;height:52px;
+  border-radius:50%;
   border:2px solid var(--green);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-svg{width:24px;height:24px;fill:var(--green)}
+.btn.main{
+  width:62px;height:62px;
+  background:rgba(0,255,100,.1);
+}
+svg{width:22px;height:22px;fill:var(--green)}
 
 /* COPYRIGHT */
 .copyright{
-  position:fixed;bottom:6px;right:8px;
-  font-size:11px;opacity:.6;cursor:pointer;
+  position:fixed;
+  bottom:76px;left:10px;
+  font-size:10px;
+  opacity:.55;
 }
 </style>
 </head>
@@ -184,7 +179,6 @@ svg{width:24px;height:24px;fill:var(--green)}
 
 <video id="cam" autoplay playsinline></video>
 <img id="ghostFlash" src="img/ghost.png">
-
 <div id="static"></div>
 <div id="noSignal">NO SIGNAL</div>
 
@@ -194,15 +188,21 @@ svg{width:24px;height:24px;fill:var(--green)}
 <audio id="smileSound" src="sounds/smile.mp3"></audio>
 
 <div class="header">GHOST RADAR</div>
-<div class="status" id="status">TAP START</div>
+<div class="status" id="status">READY</div>
 
-<div class="radar">
-  <div class="sweep"></div>
-</div>
+<div class="radar"><div class="sweep"></div></div>
 
-<div class="controls">
-  <div class="btn" onclick="startAll()">
+<div class="footer">
+  <div class="btn">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 11h16v2H4zM4 16h16v2H4z"/></svg>
+  </div>
+
+  <div class="btn main" onclick="startAll()">
     <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+  </div>
+
+  <div class="btn">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
   </div>
 </div>
 
@@ -214,9 +214,9 @@ Developed by Fayas
 <script>
 const cam=document.getElementById("cam");
 const status=document.getElementById("status");
+const ghostFlash=document.getElementById("ghostFlash");
 const staticFx=document.getElementById("static");
 const noSignal=document.getElementById("noSignal");
-const ghostFlash=document.getElementById("ghostFlash");
 
 const bg=document.getElementById("bg");
 const heartbeat=document.getElementById("heartbeat");
@@ -234,34 +234,28 @@ function startAll(){
 
  bg.volume=.35; bg.play();
  heartbeat.volume=.8; heartbeat.play();
-
  status.innerText="SCANNING";
+
  setInterval(triggerGlitch,20000);
 }
 
 function triggerGlitch(){
  cam.classList.add("rgb-glitch");
- glitchSound.currentTime=0;
  glitchSound.play();
 
- setTimeout(()=>{
-   ghostFlash.style.display="block";
- },600);
-
- setTimeout(()=>{
-   ghostFlash.style.display="none";
- },1000);
+ setTimeout(()=>ghostFlash.style.display="block",500);
+ setTimeout(()=>ghostFlash.style.display="none",900);
 
  setTimeout(()=>{
    cam.style.display="none";
    staticFx.style.display="block";
- },1200);
+ },1100);
 
  setTimeout(()=>{
    staticFx.style.display="none";
    noSignal.style.display="flex";
    smileSound.play();
- },1800);
+ },1700);
 
  setTimeout(()=>{
    noSignal.style.display="none";
