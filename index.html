@@ -6,7 +6,7 @@
 <title>Ghost Radar</title>
 
 <style>
-:root{--green:#00ff9c}
+:root{--green:#00ff66}
 *{box-sizing:border-box}
 html,body{
   margin:0;height:100%;
@@ -21,21 +21,22 @@ video{
   width:100%;height:100%;
   object-fit:cover;
   display:none;
-  filter:grayscale(100%) contrast(190%) brightness(55%)
+  filter:grayscale(100%) contrast(180%) brightness(55%)
           sepia(100%) hue-rotate(90deg);
 }
 
 /* GLITCH */
 .rgb-glitch{
   animation:rgb .08s infinite, shake .12s infinite;
-  filter:grayscale(100%) contrast(220%) brightness(50%)
+  filter:
+    grayscale(100%) contrast(220%) brightness(50%)
     sepia(100%) hue-rotate(90deg)
     drop-shadow(-4px 0 red)
     drop-shadow(4px 0 cyan);
 }
 @keyframes rgb{
-  0%{clip-path:inset(0 0 90% 0)}
-  50%{clip-path:inset(40% 0 20% 0)}
+  0%{clip-path:inset(0 0 80% 0)}
+  50%{clip-path:inset(30% 0 40% 0)}
   100%{clip-path:inset(0 0 0 0)}
 }
 @keyframes shake{
@@ -48,11 +49,15 @@ video{
 #static{
   position:fixed;inset:0;
   display:none;
-  background:repeating-linear-gradient(0deg,#000 0,#000 2px,#111 4px);
+  background:
+    repeating-linear-gradient(0deg,#000 0,#000 2px,#111 4px),
+    repeating-linear-gradient(90deg,#000 0,#000 2px,#111 4px);
   animation:noise .08s infinite;
   z-index:10;
 }
-@keyframes noise{to{background-position:200px 300px}}
+@keyframes noise{
+  to{background-position:200px 300px,-300px 400px}
+}
 
 /* NO SIGNAL */
 #noSignal{
@@ -71,21 +76,8 @@ video{
   100%{text-shadow:-3px 0 red,3px 0 cyan}
 }
 
-/* 👻 RADAR GHOST (REDISH) */
-#radarGhost{
-  position:absolute;
-  width:60px;height:60px;
-  object-fit:contain;
-  display:none;
-  filter:
-    sepia(100%)
-    hue-rotate(-20deg)
-    brightness(130%)
-    drop-shadow(0 0 15px red);
-}
-
-/* 👻 CAMERA GHOST (GREENISH) */
-#cameraGhost{
+/* 👻 CAMERA GHOST (ONLY GLITCH TIME) */
+#ghostFlash{
   position:fixed;
   inset:0;
   width:100%;
@@ -94,7 +86,7 @@ video{
   display:none;
   pointer-events:none;
   z-index:7;
-  opacity:.55;
+  opacity:.45;
   mix-blend-mode:screen;
   filter:
     grayscale(100%)
@@ -104,23 +96,58 @@ video{
     blur(2px);
 }
 
-/* RADAR */
+/* ===== AIRPORT RADAR ===== */
 .radar{
   position:fixed;
-  bottom:140px;
+  bottom:120px;
   left:50%;
   transform:translateX(-50%);
-  width:220px;height:220px;
+  width:260px;height:260px;
+  border-radius:50%;
+  overflow:hidden;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,255,100,.15) 0,
+      rgba(0,255,100,.15) 1px,
+      transparent 1px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,255,100,.15) 0,
+      rgba(0,255,100,.15) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+  box-shadow:0 0 25px rgba(0,255,100,.4);
+}
+
+/* RADAR RINGS */
+.radar::before{
+  content:"";
+  position:absolute;inset:0;
   border-radius:50%;
   border:2px solid var(--green);
+  box-shadow:
+    inset 0 0 0 40px rgba(0,255,100,.05),
+    inset 0 0 0 80px rgba(0,255,100,.04),
+    inset 0 0 0 120px rgba(0,255,100,.03);
 }
+
+/* SWEEP CONE */
 .sweep{
   position:absolute;
-  width:50%;height:2px;
-  background:var(--green);
+  width:50%;height:50%;
+  background:conic-gradient(
+    from 0deg,
+    rgba(0,255,100,.45),
+    rgba(0,255,100,.15),
+    transparent 60%
+  );
   top:50%;left:50%;
-  transform-origin:left center;
-  animation:sweep 2.5s linear infinite;
+  transform-origin:0% 0%;
+  animation:sweep 3s linear infinite;
 }
 @keyframes sweep{to{transform:rotate(360deg)}}
 
@@ -132,30 +159,32 @@ video{
   background:rgba(0,0,0,.7);
   padding:6px 16px;border-radius:20px;
 }
+
+/* CONTROLS */
 .controls{
   position:fixed;bottom:20px;left:50%;
   transform:translateX(-50%);
 }
 .btn{
-  width:60px;height:60px;
-  border-radius:50%;
+  width:60px;height:60px;border-radius:50%;
   border:2px solid var(--green);
   display:flex;align-items:center;justify-content:center;
 }
 svg{width:24px;height:24px;fill:var(--green)}
+
+/* COPYRIGHT */
+.copyright{
+  position:fixed;bottom:6px;right:8px;
+  font-size:11px;opacity:.6;cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
 <video id="cam" autoplay playsinline></video>
+<img id="ghostFlash" src="img/ghost.png">
 
-<div class="radar" id="radar">
-  <div class="sweep"></div>
-  <img id="radarGhost" src="img/ghost.png">
-</div>
-
-<img id="cameraGhost" src="img/ghost.png">
 <div id="static"></div>
 <div id="noSignal">NO SIGNAL</div>
 
@@ -165,7 +194,11 @@ svg{width:24px;height:24px;fill:var(--green)}
 <audio id="smileSound" src="sounds/smile.mp3"></audio>
 
 <div class="header">GHOST RADAR</div>
-<div class="status" id="status">READY</div>
+<div class="status" id="status">TAP START</div>
+
+<div class="radar">
+  <div class="sweep"></div>
+</div>
 
 <div class="controls">
   <div class="btn" onclick="startAll()">
@@ -173,13 +206,17 @@ svg{width:24px;height:24px;fill:var(--green)}
   </div>
 </div>
 
+<div class="copyright"
+ onclick="window.open('https://instagram.com/_fayizeeyy','_blank')">
+Developed by Fayas
+</div>
+
 <script>
 const cam=document.getElementById("cam");
-const radarGhost=document.getElementById("radarGhost");
-const cameraGhost=document.getElementById("cameraGhost");
+const status=document.getElementById("status");
 const staticFx=document.getElementById("static");
 const noSignal=document.getElementById("noSignal");
-const status=document.getElementById("status");
+const ghostFlash=document.getElementById("ghostFlash");
 
 const bg=document.getElementById("bg");
 const heartbeat=document.getElementById("heartbeat");
@@ -199,40 +236,22 @@ function startAll(){
  heartbeat.volume=.8; heartbeat.play();
 
  status.innerText="SCANNING";
-
- setTimeout(firstRadarGhost,10000);   // first ghost
+ setInterval(triggerGlitch,20000);
 }
 
-function firstRadarGhost(){
- status.innerText="ENTITY DETECTED";
- radarGhost.style.left="40%";
- radarGhost.style.top="35%";
- radarGhost.style.display="block";
-
- setTimeout(()=>radarGhost.style.display="none",4000);
-
- setTimeout(finalGhostSequence,20000);
-}
-
-function finalGhostSequence(){
- status.innerText="SIGNAL LOST";
-
- // radar ghost again
- radarGhost.style.left="55%";
- radarGhost.style.top="50%";
- radarGhost.style.display="block";
-
- // glitch start
- glitchSound.play();
+function triggerGlitch(){
  cam.classList.add("rgb-glitch");
+ glitchSound.currentTime=0;
+ glitchSound.play();
 
- // camera ghost
  setTimeout(()=>{
-   cameraGhost.style.display="block";
-   smileSound.play();
+   ghostFlash.style.display="block";
  },600);
 
- // cut
+ setTimeout(()=>{
+   ghostFlash.style.display="none";
+ },1000);
+
  setTimeout(()=>{
    cam.style.display="none";
    staticFx.style.display="block";
@@ -241,16 +260,15 @@ function finalGhostSequence(){
  setTimeout(()=>{
    staticFx.style.display="none";
    noSignal.style.display="flex";
+   smileSound.play();
  },1800);
 
  setTimeout(()=>{
    noSignal.style.display="none";
    cam.style.display="block";
    cam.classList.remove("rgb-glitch");
-   radarGhost.style.display="none";
-   cameraGhost.style.display="none";
    status.innerText="SCANNING";
- },4500);
+ },4200);
 }
 </script>
 
